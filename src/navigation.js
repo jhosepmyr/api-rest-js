@@ -1,11 +1,13 @@
 searchFormBtn.addEventListener('click', ()=> {
-    location.hash = '#search=' + searchFormInput.value;
+    //se utilizo el metodo para quitar los espacios en blanco al escribir
+    location.hash = `#search=${searchFormInput.value.replace(/\s+/g, '')}`;
 });
 trendingBtn.addEventListener('click', ()=> {
     location.hash = '#trends';
 });
 arrowBtn.addEventListener('click', ()=> {
-    location.hash = '#home';
+    // location.hash = '#home';
+    history.back();
 });
 
 window.addEventListener("DOMContentLoaded", navigator, false);
@@ -140,4 +142,8 @@ function trendsPage() {
   categoriesPreviewSection.classList.add("inactive");
   genericSection.classList.remove("inactive");
   movieDetailSection.classList.add("inactive");
+
+  headerCategoryTitle.innerHTML="Tendencias";
+
+  getTrendingMovies();
 }
