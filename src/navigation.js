@@ -1,5 +1,5 @@
 searchFormBtn.addEventListener('click', ()=> {
-    location.hash = '#search=';
+    location.hash = '#search=' + searchFormInput.value;
 });
 trendingBtn.addEventListener('click', ()=> {
     location.hash = '#trends';
@@ -25,6 +25,23 @@ function navigator() {
   } else {
     homePage();
   }
+
+  //esto es como el scroll pero con animacion
+  function smoothscroll() {
+    const currentScroll =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (currentScroll > 0) {
+      window.requestAnimationFrame(smoothscroll);
+      window.scrollTo(0, currentScroll - currentScroll / 5);
+    }
+  }
+  smoothscroll();
+  //idea del profesor
+//   document.body.scrollTop = 0;
+//   document.documentElement.scrollTop = 0;
+  //otras alternativas
+//window.scrollTo(0, 0);
+//window.scrollTo({ top: 0 });
 }
 
 function homePage() {
@@ -66,7 +83,7 @@ function categoriesPage() {
   const [_, categoryData] = location.hash.split('='); //['#category','id-name']
   const [categoryID, categoryName] = categoryData.split('-');
 
-  headerCategoryTitle.innerHTML= categoryName;
+  headerCategoryTitle.innerHTML= categoryName.replaceAll('%20',' '); //se agrega este metodo para mejor visualizacion si se quita igual funciona
 
   getMoviesByCategory(categoryID);
 }
@@ -101,6 +118,11 @@ function searchPage() {
   categoriesPreviewSection.classList.add("inactive");
   genericSection.classList.remove("inactive");
   movieDetailSection.classList.add("inactive");
+
+  
+  //['#search','busqueda']
+  const [_, query] = location.hash.split('=');
+  getMoviesBySearch(query); 
 }
 
 function trendsPage() {
