@@ -51,6 +51,7 @@ h1, h2 {
   font-weight: var(--font-weight-title1);
   margin: 0;
   padding: 0;
+  margin-top: 50px;
 }
 
 h2 {
@@ -85,6 +86,12 @@ button {
   font-weight: var(--font-weight-text2);
   font-size: 14px;
   cursor: pointer;
+}
+
+img {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 
@@ -371,7 +378,3 @@ footer {
    z-index: 1;
    /**/
 }
-h1, h2  {
-    margin-top: 50px;
-    /**/
-  }

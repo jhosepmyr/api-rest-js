@@ -136,4 +136,14 @@ async function getMovieById(id) {
 
     createCategories(movie.genres, movieDetailCategoriesList);
 
+    getRelateMoviesId(id);
+}
+
+async function getRelateMoviesId(id){
+    const { data } = await api(`movie/${id}/recommendations`);
+    const relatedMovies = data.results;
+
+    createMovies(relatedMovies, relatedMoviesContainer);
+    //para que le scroll sea desde el inicio
+    relatedMoviesContainer.scrollTo(0, 0);
 }
