@@ -11,7 +11,22 @@ const api = axios.create({
 
 //Utils
 
-function createMovies(movies, container) {
+const lazyLoader = new IntersectionObserver((entries)=>{
+    entries.forEach((entry)=>{
+    //esto es la propiedad para para que aparesca cuando sea visible de la pantalla
+        if (entry.isIntersecting){
+            const url = entry.target.getAttribute('data-img')
+            entry.target.setAttribute('src', url);
+        }
+    //esto es para observar el elemento y sus propiedades
+        // console.log('entry')
+        // console.log({entry})
+        // const url = movieImg.getAttribute('data-img');
+        // movieImg.setAttribute('src', url);
+    });
+});
+
+function createMovies(movies, container, lazyLoad=false) {
     container.innerHTML = "";
 
     movies.forEach(movie => {
@@ -26,9 +41,14 @@ function createMovies(movies, container) {
         movieImg.classList.add('movie-img');
         movieImg.setAttribute('alt', movie.title);
         movieImg.setAttribute(
-            'src',
+            //cambiamos el atributo para que se cambie despues
+            lazyLoad ? 'data-img': 'src',
             'https://image.tmdb.org/t/p/w300/'+ movie.poster_path,
         );
+        //usamos este metodo para que en la constante de IntersectionObserver puede usarlo con sus metodos respectivos
+        if(lazyLoad){
+            lazyLoader.observe(movieImg);
+        }
 
         movieContainer.appendChild(movieImg);
         container.appendChild(movieContainer);
@@ -62,9 +82,9 @@ async function getTrendingMoviesPreview() {
     const {data} = await api('trending/movie/day');
 
     const movies = data.results;
-    console.log({data, movies});
+    // console.log({data, movies});
 
-    createMovies(movies, trendingMoviesPreviewList);
+    createMovies(movies, trendingMoviesPreviewList, true);
 
 }
 
@@ -72,7 +92,7 @@ async function getCategoriesPreview() {
     const { data } = await api('genre/movie/list');
 
     const categories = data.genres;
-    console.log({data, categories});
+    // console.log({data, categories});
 
     // categoriesPreview
     createCategories(categories, categoriesPreviewList);
@@ -87,7 +107,7 @@ async function getMoviesByCategory(id) {
     });
 
     const movies = data.results;
-    console.log({data, movies});
+    // console.log({data, movies});
 
     createMovies(movies, genericSection);
 
@@ -101,7 +121,7 @@ async function getMoviesBySearch(query) {
     });
 
     const movies = data.results;
-    console.log({data, movies});
+    // console.log({data, movies});
 
     createMovies(movies, genericSection);
 
@@ -111,7 +131,7 @@ async function getTrendingMovies() {
     const {data} = await api('trending/movie/day');
 
     const movies = data.results;
-    console.log({data, movies});
+    // console.log({data, movies});
 
     createMovies(movies, genericSection);
 
