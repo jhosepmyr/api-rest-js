@@ -46,6 +46,14 @@ function createMovies(movies, container, lazyLoad=false) {
             'https://image.tmdb.org/t/p/w300/'+ movie.poster_path,
         );
         //usamos este metodo para que en la constante de IntersectionObserver puede usarlo con sus metodos respectivos
+
+        movieImg.addEventListener('error', ()=>{
+            movieImg.setAttribute(
+                'src',
+                'https://static.platzi.com/static/images/error/img404.png',
+            );
+        });
+
         if(lazyLoad){
             lazyLoader.observe(movieImg);
         }
@@ -109,7 +117,7 @@ async function getMoviesByCategory(id) {
     const movies = data.results;
     // console.log({data, movies});
 
-    createMovies(movies, genericSection);
+    createMovies(movies, genericSection, true);
 
 }
 
@@ -133,7 +141,7 @@ async function getTrendingMovies() {
     const movies = data.results;
     // console.log({data, movies});
 
-    createMovies(movies, genericSection);
+    createMovies(movies, genericSection, true);
 
 }
 
@@ -154,7 +162,7 @@ async function getMovieById(id) {
     movieDetailDescription.textContent = movie.overview;
     movieDetailScore.textContent = movie.vote_average;
 
-    createCategories(movie.genres, movieDetailCategoriesList);
+    createCategories(movie.genres, movieDetailCategoriesList, true);
 
     getRelateMoviesId(id);
 }
@@ -163,7 +171,7 @@ async function getRelateMoviesId(id){
     const { data } = await api(`movie/${id}/recommendations`);
     const relatedMovies = data.results;
 
-    createMovies(relatedMovies, relatedMoviesContainer);
+    createMovies(relatedMovies, relatedMoviesContainer, true);
     //para que le scroll sea desde el inicio
     relatedMoviesContainer.scrollTo(0, 0);
 }

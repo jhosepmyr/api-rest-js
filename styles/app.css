@@ -131,6 +131,11 @@ img {
 
 .movie-img {
   border-radius: 8px;
+  min-height: 175px;
+}
+.movie-img:hover {
+  transform: scale(1.2);
+  transition-duration: .5s;
 }
 
 .categoriesPreview-list, .categories-list {
