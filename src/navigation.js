@@ -1,3 +1,7 @@
+let page = 1;
+let maxPage;
+let infiniteScroll;
+
 searchFormBtn.addEventListener('click', ()=> {
     //se utilizo el metodo para quitar los espacios en blanco al escribir
     location.hash = `#search=${searchFormInput.value.replace(/\s+/g, '')}`;
@@ -12,9 +16,15 @@ arrowBtn.addEventListener('click', ()=> {
 
 window.addEventListener("DOMContentLoaded", navigator, false);
 window.addEventListener("hashchange", navigator, false);
+window.addEventListener('scroll', infiniteScroll, false);
 
 function navigator() {
   // console.log({ location });
+
+  if(infiniteScroll){
+    window.removeEventListener('scroll', infiniteScroll, {passive: false});
+    infiniteScroll = undefined;
+  }
 
   if (location.hash.startsWith("#trends")) {
     trendsPage();
@@ -44,6 +54,10 @@ function navigator() {
   //otras alternativas
 //window.scrollTo(0, 0);
 //window.scrollTo({ top: 0 });
+  
+  if (infiniteScroll){
+    window.addEventListener('scroll', infiniteScroll, {passive: false});
+  }
 }
 
 function homePage() {
@@ -88,6 +102,8 @@ function categoriesPage() {
   headerCategoryTitle.innerHTML= categoryName.replaceAll('%20',' '); //se agrega este metodo para mejor visualizacion si se quita igual funciona
 
   getMoviesByCategory(categoryID);
+
+  infiniteScroll = getPaginatedMoviesByCategory(categoryID);
 }
 
 function movieDetailsPage() {
@@ -129,6 +145,8 @@ function searchPage() {
   //['#search','busqueda']
   const [_, query] = location.hash.split('=');
   getMoviesBySearch(query); 
+
+  infiniteScroll = getPaginatedMoviesBySearch(query);
 }
 
 function trendsPage() {
@@ -150,4 +168,6 @@ function trendsPage() {
   headerCategoryTitle.innerHTML="Tendencias";
 
   getTrendingMovies();
+
+  infiniteScroll = getPaginatedTrendingMovies;
 }

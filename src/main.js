@@ -26,7 +26,7 @@ const lazyLoader = new IntersectionObserver((entries)=>{
     });
 });
 
-function createMovies(movies, container, {lazyLoad=false, clean=true}) {
+function createMovies(movies, container, {lazyLoad=false, clean=true}) { 
     if(clean){
         container.innerHTML='';
     }
@@ -118,9 +118,51 @@ async function getMoviesByCategory(id) {
 
     const movies = data.results;
     // console.log({data, movies});
+    maxPage = data.total_pages;
 
     createMovies(movies, genericSection, {lazyLoad:true, clean:true});
 
+}
+
+function getPaginatedMoviesByCategory(id) {
+    return async function(){
+        const { 
+            scrollTop, 
+            scrollHeight, 
+            clientHeight 
+        } = document.documentElement;
+      
+        const scrollIsBottom = scrollTop + clientHeight >= scrollHeight - 15;
+      
+        const pageIsNotMax = page < maxPage;
+      
+        if (scrollIsBottom  && pageIsNotMax) {
+          page++;
+          const {data} = await api('discover/movie', {
+            params: {
+                with_genres: id,
+                page,
+            },
+        });
+    
+        const movies = data.results;
+          // console.log({data, movies});
+    
+          createMovies(
+            movies, 
+            genericSection, 
+            { lazyLoad: true, clean: false }
+          );
+        }
+      
+    }
+  //   const btnLoadMore = document.createElement("button");
+  //   btnLoadMore.innerText = "Cargar mas";
+  //   btnLoadMore.addEventListener("click", getPaginatedTrendingMovies);
+  //   genericSection.appendChild(btnLoadMore);
+  //   btnLoadMore.addEventListener("click", () => {
+  //     genericSection.removeChild(btnLoadMore);
+  //   });
 }
 
 async function getMoviesBySearch(query) {
@@ -131,52 +173,101 @@ async function getMoviesBySearch(query) {
     });
 
     const movies = data.results;
+    maxPage = data.total_pages;
+    console.log(maxPage)
     // console.log({data, movies});
 
     createMovies(movies, genericSection,{lazyLoad:true, clean:true});
 
 }
 
+function getPaginatedMoviesBySearch(query) {
+    return async function(){
+        const { 
+            scrollTop, 
+            scrollHeight, 
+            clientHeight 
+        } = document.documentElement;
+      
+        const scrollIsBottom = scrollTop + clientHeight >= scrollHeight - 15;
+      
+        const pageIsNotMax = page < maxPage;
+      
+        if (scrollIsBottom  && pageIsNotMax) {
+          page++;
+          const { data } = await api("search/movie", {
+            params: {
+              query,
+              page,
+            },
+          });
+    
+          const movies = data.results;
+          // console.log({data, movies});
+    
+          createMovies(
+            movies, 
+            genericSection, 
+            { lazyLoad: true, clean: false }
+          );
+        }
+      
+    }
+  //   const btnLoadMore = document.createElement("button");
+  //   btnLoadMore.innerText = "Cargar mas";
+  //   btnLoadMore.addEventListener("click", getPaginatedTrendingMovies);
+  //   genericSection.appendChild(btnLoadMore);
+  //   btnLoadMore.addEventListener("click", () => {
+  //     genericSection.removeChild(btnLoadMore);
+  //   });
+}
+
 async function getTrendingMovies() {
     const {data} = await api('trending/movie/day');
 
     const movies = data.results;
+    maxPage = data.total_pages;
     // console.log({data, movies});
 
     createMovies(movies, genericSection, { lazyLoad: true, clean: true });
 
-    const btnLoadMore = document.createElement('button');
-    btnLoadMore.innerText='Cargar mas';
-    btnLoadMore.addEventListener('click', getPaginatedTrendingMovies);
-    genericSection.appendChild(btnLoadMore);
-    btnLoadMore.addEventListener('click', ()=>{
-        genericSection.removeChild(btnLoadMore);
-    });
+    // const btnLoadMore = document.createElement('button');
+    // btnLoadMore.innerText='Cargar mas';
+    // btnLoadMore.addEventListener('click', getPaginatedTrendingMovies);
+    // genericSection.appendChild(btnLoadMore);
+    // btnLoadMore.addEventListener('click', ()=>{
+    //     genericSection.removeChild(btnLoadMore);
+    // });
 
 }
 
-let page = 1;
+async function getPaginatedTrendingMovies() {
+  const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
 
-async function getPaginatedTrendingMovies(){
+  const scrollIsBottom = scrollTop + clientHeight >= scrollHeight - 15;
+
+  const pageIsNotMax = page < maxPage;
+
+  if (scrollIsBottom  && pageIsNotMax) {
     page++;
-    const {data} = await api('trending/movie/day',{
-        params: {
-            page,
-        },
+    const { data } = await api("trending/movie/day", {
+      params: {
+        page,
+      },
     });
 
     const movies = data.results;
 
-    createMovies(movies, genericSection,{ lazyLoad: true, clean: false});
+    createMovies(movies, genericSection, { lazyLoad: true, clean: false });
+  }
 
-    const btnLoadMore = document.createElement('button');
-    btnLoadMore.innerText='Cargar mas';
-    btnLoadMore.addEventListener('click', getPaginatedTrendingMovies);
-    genericSection.appendChild(btnLoadMore);
-    btnLoadMore.addEventListener('click', ()=>{
-        genericSection.removeChild(btnLoadMore);
-    });
-
+//   const btnLoadMore = document.createElement("button");
+//   btnLoadMore.innerText = "Cargar mas";
+//   btnLoadMore.addEventListener("click", getPaginatedTrendingMovies);
+//   genericSection.appendChild(btnLoadMore);
+//   btnLoadMore.addEventListener("click", () => {
+//     genericSection.removeChild(btnLoadMore);
+//   });
 }
 
 async function getMovieById(id) {
