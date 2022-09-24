@@ -1,3 +1,5 @@
+//DATA
+
 const api = axios.create({
     baseURL: 'https://api.themoviedb.org/3/',
     headers: {
@@ -7,6 +9,37 @@ const api = axios.create({
         'api_key': API_KEY,
     },
 });
+
+function likedMoviesList(){
+    const item =JSON.parse( localStorage.getItem('liked_movies'));
+    let movies;
+
+    //esta validacion es para q si este vacio no se null o indefinido sino un objeto vacio
+    if(item){
+        movies = item;
+    } else{
+        movies = {};
+    }
+    return movies;
+}
+
+function likeMovie(movie){
+    const likedMovies = likedMoviesList();
+    //esto es igual al objeto {'liked_movies',{idmovie1:datos1, id2movie:datos2}}
+
+    if(likedMovies[movie.id]){
+        //quitar los valores de la pelicula
+        //para que no este e el array esto es cuando hagamos el segundo click para quitar de favoritos
+        likedMovies[movie.id]=undefined;
+
+    }else{
+        //darle los nuevos valores a la pelicula
+        likedMovies[movie.id]=movie;
+    }
+
+    localStorage.setItem('liked_movies',JSON.stringify(likedMovies));
+    console.log(localStorage.getItem('liked_movies'));
+}
 
 
 //Utils
@@ -60,7 +93,8 @@ function createMovies(movies, container, {lazyLoad=false, clean=true}) {
         const movieBtn = document.createElement('button');
         movieBtn.classList.add('movie-btn');
         movieBtn.addEventListener('click',()=>{
-            movieBtn.classList.toggle('movie-btn--liked')
+            movieBtn.classList.toggle('movie-btn--liked');
+            likeMovie(movie);
         });
 
         if(lazyLoad){
