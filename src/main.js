@@ -38,7 +38,10 @@ function likeMovie(movie){
     }
 
     localStorage.setItem('liked_movies',JSON.stringify(likedMovies));
-    console.log(localStorage.getItem('liked_movies'));
+    // console.log(localStorage.getItem('liked_movies'));
+    //para actualizar la informacion cuando se modifica el valor de favorito de alguna pelicula
+    getTrendingMoviesPreview()
+    getLikedMovies()
 }
 
 
@@ -92,6 +95,8 @@ function createMovies(movies, container, {lazyLoad=false, clean=true}) {
 
         const movieBtn = document.createElement('button');
         movieBtn.classList.add('movie-btn');
+        //esto es un condicional, si el primero es verdadero el segundo se ejecuta sino no.
+        likedMoviesList()[movie.id] && movieBtn.classList.toggle('movie-btn--liked');
         movieBtn.addEventListener('click',()=>{
             movieBtn.classList.toggle('movie-btn--liked');
             likeMovie(movie);
@@ -341,4 +346,22 @@ async function getRelateMoviesId(id){
     createMovies(relatedMovies, relatedMoviesContainer, {lazyLoad:true, clean:true});
     //para que le scroll sea desde el inicio
     relatedMoviesContainer.scrollTo(0, 0);
+}
+
+function getLikedMovies(){
+    const likedMovies = likedMoviesList();
+    //aqui vamos a obtener todos los valores del objeto y convertirlo en un array
+    const moviesArray = Object.values(likedMovies);
+
+    //esto oculta la seccion si esta vacia de favoritos
+    // if(!moviesArray.length){
+    //     likedMoviesSection.classList.add('inactive');
+    // }else{
+    //     likedMoviesSection.classList.remove('inactive');
+    // }
+    // son lo mismo pero el de abajo es mas corto
+    !moviesArray.length ? likedMoviesSection.classList.add('inactive'): likedMoviesSection.classList.remove('inactive'),
+     
+
+    createMovies(moviesArray, likedMoviesListArticle , { lazyLoad: true, clean: true});
 }

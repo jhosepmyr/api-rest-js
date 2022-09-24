@@ -394,6 +394,16 @@ button {
   margin-right: 8px;
 }
 
+/* .relatedMovies-scrollContainer::-webkit-scrollbar {
+  background-color: var(--purple-medium-1);
+  height: 6px;
+}
+
+.relatedMovies-scrollContainer::-webkit-scrollbar-thumb {
+  background-color: var(--purple-dark-1);
+  border-radius: 8px;
+} */
+
 .relatedMovies-scrollContainer .movie-container--loading {
   width: 125px;
   min-width: 125px;
